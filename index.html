@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#17112c">
+<title>Pixel Cupid — Cartas secretas</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="kicker">★               ★</div>
+  <h1>CARTAS SECRETAS</h1>
+  <p>Apunta con el dedo o el ratón. ¡Dispara una flecha para descubrir cada mensaje!</p>
+</header>
+
+<div class="stats">
+  <span class="stat" id="count">CARTAS: 0 / 5</span>
+  <span class="stat" id="arrowsStat">FLECHAS: 5</span>
+  <span class="stat" id="mode">MODO: APUNTAR</span>
+</div>
+
+<section class="game" aria-label="Juego de cartas y flechas">
+  <div class="topline"><span>♡ </span><span id="remaining">5 cartas ocultas</span></div>
+  <div id="arena">
+    <div id="targetLayer"></div>
+    <div id="fx"></div>
+    <svg id="aimLine" aria-hidden="true"></svg>
+    <svg id="bow" viewBox="0 0 90 120" role="img" aria-label="Arco; arrastra para apuntar">
+      <path d="M20 9 Q88 60 20 111" fill="none" stroke="#ff7eb6" stroke-width="7" stroke-linecap="square"/>
+      <path d="M20 9 L20 111" stroke="#ffe7f4" stroke-width="2"/>
+      <path d="M15 60 L35 60" stroke="#ffe58b" stroke-width="5"/>
+      <rect x="6" y="52" width="12" height="16" fill="#8ef4ff" stroke="#17112c" stroke-width="3"/>
+      <rect x="0" y="55" width="7" height="10" fill="#ff7eb6"/>
+    </svg>
+    <div class="aim-note" id="aimNote"><strong>CONTROLES:</strong> toca una carta para apuntar o arrastra desde el arco. Suelta para disparar.</div>
+  </div>
+</section>
+
+<div class="toolbar">
+  <button class="btn" id="fire" disabled>➶ DISPARAR</button>
+  <button class="btn alt" id="reset">↻ REINICIAR</button>
+</div>
+<p class="note" id="help">Selecciona una carta y pulsa DISPARAR, o arrastra desde el arco hacia una carta. Cada carta solo se puede descubrir una vez.</p>
+
+<footer>HECHO CON PIXELES, FLECHAS Y CARIÑO ♥</footer>
+</div>
+
+<!-- Pantalla final emergente -->
+<div id="finale" role="dialog" aria-modal="true" aria-labelledby="finaleTitle">
+  <div class="finale-card">
+    <canvas id="heartCanvas" width="600" height="320" aria-label="Animación de partículas formando un corazón"></canvas>
+    <h2 id="finaleTitle">¡MISIÓN COMPLETADA!</h2>
+    <p class="finaltext" id="finalMessage">Recibiste mis cartas. ♡</p>
+    <button class="btn" id="playAgain">JUGAR OTRA VEZ</button>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="letterTitle">
+  <article class="letter">
+    <button class="close-x" id="xClose" aria-label="Cerrar carta">×</button>
+    <div class="tag" id="letterNum">CARTA 1/5</div>
+    <h2 id="letterTitle">UN MENSAJE PARA TI</h2>
+    <div class="body" id="letterBody"></div>
+    <div class="sign" id="letterSign">— Con cariño ♡</div>
+    <div class="actions"><button class="btn" id="closeLetter">CERRAR CARTA ♥</button></div>
+  </article>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+:root{--bg:#17112c;--panel:#24183d;--pink:#ff7eb6;--pale:#ffd7ec;--cyan:#8ef4ff;--yellow:#ffe58b;--white:#fff5fb;--line:#674b85}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--white);font-family:'VT323',monospace;font-size:22px;image-rendering:pixelated;background-image:linear-gradient(#ffffff05 1px,transparent 1px),linear-gradient(90deg,#ffffff05 1px,transparent 1px);background-size:18px 18px}
+button{font:inherit;cursor:pointer;touch-action:manipulation}
+button:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--cyan);outline-offset:4px}
+.wrap{max-width:1100px;margin:auto;padding:24px 16px 54px}
+header{text-align:center;padding:15px 0 20px}
+.kicker{font:10px 'Press Start 2P',monospace;color:var(--cyan);line-height:1.8;letter-spacing:1px}
+h1{font:clamp(22px,4vw,38px) 'Press Start 2P',monospace;line-height:1.6;color:var(--pale);text-shadow:4px 4px 0 #6f397f;margin:15px 0}
+header p{max-width:650px;margin:0 auto;color:#d9c8ec;line-height:1.45;font-size:25px}
+.stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:18px 0}
+.stat{padding:7px 12px;border:2px solid var(--line);background:#211631;box-shadow:3px 3px 0 #0b0815;color:var(--yellow)}
+.game{position:relative;border:3px solid #a87ac5;box-shadow:7px 7px 0 #0b0815;background:#211735;overflow:hidden}
+.topline{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 13px;background:#302044;border-bottom:3px solid #a87ac5;font-size:23px;color:var(--cyan)}
+#arena{position:relative;height:min(64vh,570px);min-height:410px;overflow:hidden;touch-action:pan-y;background:linear-gradient(#241a3caa,#21152cdd),repeating-linear-gradient(0deg,transparent 0 31px,#ffffff07 32px),repeating-linear-gradient(90deg,transparent 0 31px,#ffffff07 32px);user-select:none}
+#arena:after{content:"";position:absolute;left:0;right:0;bottom:0;height:42px;background:repeating-linear-gradient(90deg,#4a2e59 0 24px,#583766 24px 48px);border-top:4px solid #8d5c9f;pointer-events:none}
+#targetLayer{position:absolute;inset:0 0 40px}
+.card-target{position:absolute;width:clamp(50px,8vw,78px);height:clamp(70px,11vw,104px);border:3px solid #ffe2f0;background:#ffadd2;color:#8b376e;box-shadow:4px 4px 0 #100b1b;display:grid;place-items:center;transform:translate(-50%,-50%);transition:opacity .22s,transform .22s,filter .22s;z-index:2}
+.card-target:before{content:"";position:absolute;inset:5px;border:2px dashed #cf6098;pointer-events:none}
+.card-target .heart{font-size:clamp(22px,4vw,35px);text-shadow:2px 2px #fff}
+.card-target .num{position:absolute;bottom:5px;left:0;right:0;text-align:center;font-size:16px}
+.card-target.hit{opacity:0;transform:translate(-50%,-50%) scale(.2) rotate(15deg);pointer-events:none}
+.card-target:hover{filter:brightness(1.12)}
+#aimLine{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none}
+#bow{position:absolute;left:30px;bottom:18px;z-index:5;width:82px;height:112px;touch-action:none;cursor:grab;filter:drop-shadow(3px 3px 0 #100b1b)}
+#bow:active{cursor:grabbing}
+.aim-note{position:absolute;left:125px;bottom:17px;z-index:4;color:#d8c4eb;background:#1a1029dd;border:2px solid #674b85;padding:7px 10px;max-width:calc(100% - 145px);line-height:1.2}
+.aim-note strong{color:var(--yellow)}
+.toolbar{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:18px 0}
+.btn{padding:11px 15px;border:3px solid #ffe4f2;background:var(--pink);color:#2a1230;box-shadow:4px 4px 0 #090610;font-size:23px}
+.btn.alt{background:#302044;color:var(--white);border-color:#9d7bb8}
+.btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #090610}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.note{text-align:center;color:#c7b4db;max-width:720px;margin:0 auto;line-height:1.3}
+
+/* EFECTOS DE DISPARO */
+#fx{position:absolute;inset:0;pointer-events:none;z-index:6;overflow:hidden}
+.spark{position:absolute;width:8px;height:8px;margin:-4px 0 0 -4px;background:#ffe58b;border:2px solid #17112c;box-sizing:border-box;animation:spark .6s ease-out forwards}
+@keyframes spark{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(.35);opacity:0}}
+.trail{animation:trailFade .45s linear forwards}
+@keyframes trailFade{from{opacity:.95}to{opacity:0}}
+.shake{animation:shake .3s steps(4,end)}
+@keyframes shake{0%,100%{transform:translate(0,0)}25%{transform:translate(-3px,2px)}50%{transform:translate(3px,-2px)}75%{transform:translate(-2px,-1px)}}
+
+/* CARTA EMERGENTE (con scroll para poemas largos) */
+.overlay{display:none;position:fixed;inset:0;z-index:20;background:#0c0716df;align-items:center;justify-content:center;padding:18px}
+.overlay.show{display:flex;animation:fade .2s}
+.letter{
+  position:relative;
+  width:min(100%,520px);
+  background:#fff0f8;
+  color:#381b46;
+  border:5px solid #ffacd2;
+  box-shadow:8px 8px 0 #080510;
+  padding:27px 24px 22px;
+  animation:letter-in .35s steps(5,end);
+  max-height:90vh;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+}
+@keyframes letter-in{from{opacity:0;transform:scale(.65) translateY(30px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.letter:before{content:"";position:absolute;inset:7px;border:2px dashed #d77bac;pointer-events:none}
+.letter>*{position:relative}
+.letter .tag{text-align:center;font:9px 'Press Start 2P',monospace;color:#a7447c;line-height:1.8}
+.letter h2{text-align:center;font:clamp(14px,3vw,20px) 'Press Start 2P',monospace;line-height:1.8;margin:18px 0;color:#57265f}
+.letter .body{font-size:25px;line-height:1.35;white-space:pre-wrap;overflow-wrap:break-word;min-height:90px;margin:18px 0}
+.letter .sign{text-align:right;font-size:25px;color:#a7447c;margin-top:10px}
+.letter .actions{text-align:center;margin-top:22px;position:sticky;bottom:0;background:linear-gradient(transparent,#fff0f8 30%);padding-top:14px}
+.close-x{position:absolute;right:10px;top:7px;background:transparent;border:0;color:#8a467d;font-size:30px;z-index:2}
+
+/* PANTALLA FINAL EMERGENTE */
+#finale{display:none;position:fixed;inset:0;z-index:25;background:#0c0716ea;align-items:center;justify-content:center;padding:18px;overflow:auto}
+#finale.show{display:flex;animation:fade .35s}
+.finale-card{position:relative;width:min(100%,760px);text-align:center;padding:26px 20px 24px;border:3px solid var(--pink);background:#251936;box-shadow:9px 9px 0 #080510;animation:finale-in .6s cubic-bezier(.2,1.5,.45,1)}
+.finale-card:before{content:"";position:absolute;inset:8px;border:2px dashed #7a4b8c;pointer-events:none}
+.finale-card>*{position:relative}
+.finale-card h2{font:clamp(15px,3vw,24px) 'Press Start 2P',monospace;color:var(--pale);line-height:1.8;margin:10px 0 6px}
+#heartCanvas{width:min(100%,520px);height:auto;display:block;margin:0 auto;image-rendering:pixelated}
+.finaltext{font-size:26px;color:#e8d8f3;margin:6px 0 20px}
+@keyframes finale-in{0%{opacity:0;transform:scale(.4) translateY(70px)}55%{opacity:1;transform:scale(1.06) translateY(0)}72%{transform:scale(.97)}100%{transform:scale(1)}}
+
+footer{text-align:center;color:#9d8bb4;font-size:18px;margin-top:28px}
+
+@media(max-width:560px){
+  .wrap{padding:17px 11px 40px}
+  h1{font-size:21px}.kicker{font-size:8px}
+  #arena{min-height:440px;height:58vh}
+  .card-target{width:52px;height:73px}
+  .topline{font-size:18px}
+  #bow{left:14px;width:70px;height:96px}
+  .aim-note{left:91px;max-width:calc(100% - 100px);font-size:19px}
+  .letter{padding:25px 18px 19px;width:100%}
+  .letter .body{font-size:22px;line-height:1.4}
+  .finale-card{padding:20px 14px 18px}
+  .finaltext{font-size:22px}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
